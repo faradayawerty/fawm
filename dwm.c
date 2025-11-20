@@ -2228,6 +2228,7 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
++	system("while true; do\nxsetroot -name \" $(faw_dwm_panel) \"\nsleep 20s\ndone &");
 	run();
 	cleanup();
 	XCloseDisplay(dpy);
