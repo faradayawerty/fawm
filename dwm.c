@@ -143,6 +143,8 @@ typedef struct {
 } Rule;
 
 /* function declarations */
+int main_col_count();
+void cycle_main_col();
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -1566,6 +1568,29 @@ setmfact(const Arg *arg)
 }
 
 void
+zoom(const Arg *arg)
+{
+	Client *c = selmon->sel;
+
+	if (!selmon->lt[selmon->sellt]->arrange || !c || c->isfloating)
+		return;
+	if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
+		return;
+	pop(c);
+}
+
+void
+update_scheme()
+{
+	Client *c = selmon->sel;
+	unsigned int alphas[] = {borderalpha, baralpha, OPAQUE};
+	for (int i = 0; i < LENGTH(colors); i++)
+		scheme[i] = drw_scm_create(drw, colors[i], alphas, 3);
+	focus(c);
+	drawbars();
+}
+
+void
 setup(void)
 {
 	int i;
@@ -1680,8 +1705,6 @@ spawn(const Arg *arg)
 {
 	struct sigaction sa;
 
-	if (arg->v == dmenucmd)
-		dmenumon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -2198,16 +2221,22 @@ xinitvisual(void)
 	}
 }
 
-void
-zoom(const Arg *arg)
+int main_col_count()
 {
-	Client *c = selmon->sel;
+	int i;
+	for(i = 0; cols[i] != NULL; i++)
+		;
+	return i;
+}
 
-	if (!selmon->lt[selmon->sellt]->arrange || !c || c->isfloating)
-		return;
-	if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
-		return;
-	pop(c);
+void cycle_main_col()
+{
+	current_main_col++;
+	int cols_count = main_col_count();
+	int i = current_main_col % cols_count;
+	colors[SchemeSel][1] = cols[i];
+	colors[SchemeSel][2] = cols[i];
+	update_scheme();
 }
 
 int
