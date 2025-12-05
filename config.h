@@ -7,7 +7,6 @@ static const unsigned int snap      = 8;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Hack:size=10" };
-static const char dmenufont[]       = "Hack:size=10";
 static unsigned int baralpha        = 0xd0;
 static unsigned int borderalpha     = OPAQUE;
 
@@ -18,7 +17,7 @@ static char col_gray4[]       = "#eeeeee";
 
 #define COLOR_RED     "#771111"
 #define COLOR_GREEN   "#117755"
-#define COLOR_YELLOW  "#aa7722"
+#define COLOR_YELLOW  "#aa7711"
 #define COLOR_MAGENTA "#551177"
 #define COLOR_BLUE    "#005577"
 
@@ -79,7 +78,8 @@ static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          SHCMD("dmenu_run") },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          SHCMD("st") },
-	{ MODKEY,                       XK_c,      cycle_main_col, {0} },
+	{ MODKEY,                       XK_c,      cycle_main_col, { .i = +1 } },
+	{ MODKEY|ShiftMask,             XK_c,      cycle_main_col, { .i = -1 } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },

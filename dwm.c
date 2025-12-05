@@ -26,6 +26,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -143,7 +144,7 @@ typedef struct {
 } Rule;
 
 /* function declarations */
-int main_col_count();
+int col_count();
 void cycle_main_col();
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
@@ -2221,7 +2222,7 @@ xinitvisual(void)
 	}
 }
 
-int main_col_count()
+int col_count()
 {
 	int i;
 	for(i = 0; cols[i] != NULL; i++)
@@ -2229,11 +2230,21 @@ int main_col_count()
 	return i;
 }
 
-void cycle_main_col()
+void cycle_main_col(const Arg *arg)
 {
-	current_main_col++;
-	int cols_count = main_col_count();
+	current_main_col += arg->i;
+	int cols_count = col_count();
 	int i = current_main_col % cols_count;
+	colors[SchemeSel][1] = cols[i];
+	colors[SchemeSel][2] = cols[i];
+	update_scheme();
+}
+
+void random_main_col()
+{
+	int cols_count = col_count();
+	srand(time(NULL));
+	int i = rand() % cols_count;
 	colors[SchemeSel][1] = cols[i];
 	colors[SchemeSel][2] = cols[i];
 	update_scheme();
@@ -2252,6 +2263,7 @@ main(int argc, char *argv[])
 		die("dwm: cannot open display");
 	checkotherwm();
 	setup();
+	random_main_col();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
