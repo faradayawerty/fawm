@@ -20,8 +20,10 @@ static char col_gray4[]       = "#eeeeee";
 #define COLOR_YELLOW  "#aa7711"
 #define COLOR_MAGENTA "#551177"
 #define COLOR_BLUE    "#005577"
+#define COLOR_GRAY    "#666666"
 
 static char *cols[] = {
+    COLOR_GRAY,
     COLOR_RED,
     COLOR_GREEN,
     COLOR_YELLOW,
@@ -34,7 +36,7 @@ static int current_main_col = 0;
 
 static char *colors[][3] = {
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, COLOR_BLUE,  COLOR_BLUE  },
+	[SchemeSel]  = { col_gray4, "#666666", "#666666" },
 };
 
 /* tagging */
