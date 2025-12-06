@@ -1,12 +1,14 @@
 /* See LICENSE file for copyright and license details. */
 
+#define FONT "Hack:size=10"
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 8;   /* gaps between windows */
 static const unsigned int snap      = 8;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Hack:size=10" };
+static const char *fonts[]          = { FONT };
 static unsigned int baralpha        = 0xd0;
 static unsigned int borderalpha     = OPAQUE;
 
@@ -15,20 +17,22 @@ static char col_gray2[]       = "#444444";
 static char col_gray3[]       = "#bbbbbb";
 static char col_gray4[]       = "#eeeeee";
 
-#define COLOR_RED     "#771111"
-#define COLOR_GREEN   "#117755"
-#define COLOR_YELLOW  "#aa7711"
+#define COLOR_RED "#771111"
+#define COLOR_GREEN "#117755"
+#define COLOR_YELLOW "#aa7711"
 #define COLOR_MAGENTA "#551177"
-#define COLOR_BLUE    "#005577"
-#define COLOR_GRAY    "#666666"
+#define COLOR_BLUE "#005577"
+#define COLOR_GRAY "#666666"
+#define COLOR_PINK "#aa1177"
 
 static char *cols[] = {
     COLOR_GRAY,
-    COLOR_RED,
+    COLOR_BLUE,
     COLOR_GREEN,
     COLOR_YELLOW,
-    COLOR_BLUE,
+    COLOR_PINK,
     COLOR_MAGENTA,
+    COLOR_RED,
     NULL
 };
 
@@ -74,11 +78,13 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", FONT, "-nb", col_gray1, "-nf", col_gray3, "-sb", COLOR_GRAY, "-sf", col_gray4, NULL };
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          SHCMD("dmenu_run") },
+	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          SHCMD("st") },
 	{ MODKEY,                       XK_c,      cycle_main_col, { .i = +1 } },
 	{ MODKEY|ShiftMask,             XK_c,      cycle_main_col, { .i = -1 } },

@@ -1706,6 +1706,8 @@ spawn(const Arg *arg)
 {
 	struct sigaction sa;
 
+	if (arg->v == dmenucmd)
+		dmenumon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -2234,20 +2236,15 @@ void cycle_main_col(const Arg *arg)
 {
 	current_main_col += arg->i;
 	int cols_count = col_count();
+	if(current_main_col < 0)
+		current_main_col += cols_count;
+	if(current_main_col > cols_count)
+		current_main_col -= cols_count;
 	int i = current_main_col % cols_count;
 	colors[SchemeSel][1] = cols[i];
 	colors[SchemeSel][2] = cols[i];
 	update_scheme();
-}
-
-void random_main_col()
-{
-	int cols_count = col_count();
-	srand(time(NULL));
-	int i = rand() % cols_count;
-	colors[SchemeSel][1] = cols[i];
-	colors[SchemeSel][2] = cols[i];
-	update_scheme();
+	dmenucmd[10] = cols[i];
 }
 
 int
@@ -2263,7 +2260,6 @@ main(int argc, char *argv[])
 		die("dwm: cannot open display");
 	checkotherwm();
 	setup();
-	//random_main_col();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
